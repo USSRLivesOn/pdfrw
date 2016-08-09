@@ -32,6 +32,7 @@ from .objects import PdfDict, PdfArray, PdfName
 from .pdfreader import PdfReader
 from .errors import log, PdfNotImplementedError
 from .py23_diffs import iteritems
+import zlib
 
 
 class ViewInfo(object):
@@ -191,14 +192,17 @@ def _build_cache(contents, allow_compressed):
     private.xobj_copy = xobj_copy
 
     if len(array) > 1:
+        for x in array:
+            if x.Filter == PdfName.FlateDecode:
+                x.pop(PdfName.Filter)
+                x.stream = zlib.decompress(x.stream)
+            elif x.Filter:
+                allow_compressed = False
+
         newstream = '\n'.join(x.stream for x in array)
         newlength = sum(int(x.Length) for x in array) + len(array) - 1
         assert newlength == len(newstream)
         xobj_copy.stream = newstream
-
-        # Cannot currently cope with different kinds of
-        # compression in the array, so just disallow it.
-        allow_compressed = False
 
     if not allow_compressed:
         # Make sure there are no compression parameters
