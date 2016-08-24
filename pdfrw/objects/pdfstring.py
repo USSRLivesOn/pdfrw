@@ -110,7 +110,7 @@ class PdfString(str):
             # escape, the backslash is ignored.
             return m.group(1)
 
-        return self.unescape_re.sub(handle_escape, bytearray(self[1:-1]))
+        return self.unescape_re.sub(handle_escape,  bytes(bytearray(self[1:-1], encoding='pdfdocencoding'))
 
     def decode_bytes(self, bytestr):
         if bytestr[:2] == codecs.BOM_UTF16_BE:
