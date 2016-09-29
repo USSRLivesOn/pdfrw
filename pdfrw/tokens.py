@@ -230,7 +230,7 @@ class PdfTokens(object):
     def error(self, *arg):
         s = self.msg(*arg)
         if s:
-            log.error(s)
+            raise ValueError(s)
 
     def exception(self, *arg):
         raise PdfParseError(self.msg(*arg))

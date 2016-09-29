@@ -69,8 +69,7 @@ def uncompress(mylist, leave_raw=False, warnings=set(),
                 obj.Filter = None
                 obj.stream = data if leave_raw else convert_load(data)
             else:
-                log.error('%s %s' % (error, repr(obj.indirect)))
-                ok = False
+                raise ValueError('%s %s' % (error, repr(obj.indirect)))
     return ok
 
 

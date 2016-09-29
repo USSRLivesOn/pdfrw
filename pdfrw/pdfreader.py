@@ -417,9 +417,8 @@ class PdfReader(PdfDict):
                         setdefault((objnum, generation), offset)
                     objnum += 1
                 elif tokens:
-                    log.error('Invalid line in xref table: %s' %
-                              repr(line))
-                    raise ValueError
+                    raise ValueError('Invalid line in xref table: %s' %
+                                     repr(line))
             log.warning('Badly formatted xref table')
             source.floc = end
             next()
@@ -464,13 +463,12 @@ class PdfReader(PdfDict):
                 for node in readnode(node[pagesname]):
                     yield node
             else:
-                log.error('Expected /Page or /Pages dictionary, got %s' %
-                          repr(node))
+                raise ValueError('Expected /Page or /Pages dictionary, got %s'
+                                 % repr(node))
         try:
             return list(readnode(node))
         except (AttributeError, TypeError) as s:
-            log.error('Invalid page tree: %s' % s)
-            return []
+            raise ValueError('Invalid page tree: %s' % s)
 
     def __init__(self, fname=None, fdata=None, decompress=False,
                  disable_gc=True, verbose=True):
